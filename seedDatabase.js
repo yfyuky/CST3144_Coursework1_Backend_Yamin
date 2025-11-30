@@ -4,7 +4,7 @@ require('dotenv').config();
 
 const MONGODB_URI = process.env.MONGODB_URI;
 
-// 12 Lessons Data
+// Lessons Data
 const lessonsData = [
     {
         id: 2001,
