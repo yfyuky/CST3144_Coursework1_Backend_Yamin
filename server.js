@@ -20,11 +20,7 @@ MongoClient.connect(MONGODB_URI)
   })
   .catch(error => console.error('❌ MongoDB error:', error));
 
-// ============================================
-// MIDDLEWARE (8%)
-// ============================================
-
-// 1. Logger Middleware (4%)
+// Logger Middleware
 app.use((req, res, next) => {
   console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
   console.log('Query:', req.query);
