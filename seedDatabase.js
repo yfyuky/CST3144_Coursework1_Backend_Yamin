@@ -11,7 +11,7 @@ const lessonsData = [
         title: 'Advanced Mathematics',
         description: 'A challenge-based class covering algebra, calculus fundamentals, and problem solving.',
         price: 45.00,
-        image: 'https://images.unsplash.com/photo-1509228627152-72ae4c2d6a88?auto=format&fit=crop&w=800&q=80',
+        image: 'https://wpstaq-ap-southeast-2-media.s3.amazonaws.com/the-thinking-cap/wp-content/uploads/media/2021/01/Should-I-do-Standard-Maths-or-Advanced-Maths_-1.jpg',
         availableSeats: 5,
         location: 'Dubai Marina',
         rating: 4
@@ -31,7 +31,7 @@ const lessonsData = [
         title: 'Robotics Club',
         description: 'Hands-on robotics with weekly builds and team challenges.',
         price: 55.00,
-        image: 'https://images.unsplash.com/photo-1581093803396-9d0d1d1a3a7a?auto=format&fit=crop&w=800&q=80',
+        image: 'https://anandice.ac.in/wp-content/uploads/2025/01/mechanical-and-electrical-engineers-collaborate-in-robotics.png',
         availableSeats: 5,
         location: 'Business Bay',
         rating: 5
@@ -41,7 +41,7 @@ const lessonsData = [
         title: 'Art & Design',
         description: 'Explore drawing, painting, and digital art techniques.',
         price: 25.00,
-        image: 'https://images.unsplash.com/photo-1505682634904-d7c2a9e6d7d6?auto=format&fit=crop&w=800&q=80',
+        image: 'https://miro.medium.com/v2/resize:fit:1400/1*wj-ZuazaL-hq_6keyoVbGA.jpeg',
         availableSeats: 5,
         location: 'Al Barsha',
         rating: 3
