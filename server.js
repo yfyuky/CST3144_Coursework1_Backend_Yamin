@@ -32,7 +32,7 @@ app.use((req, res, next) => {
 // CORS - IMPORTANT: Replace with YOUR GitHub username!
 app.use(cors({
   origin: [
-    'https://yfyuky.github.io',  // ⚠️ CHANGE THIS!
+    'https://yfyuky.github.io',
     'http://localhost:5500',
     'http://127.0.0.1:5500'
   ],
@@ -42,7 +42,7 @@ app.use(cors({
 
 app.use(express.json());
 
-// 2. Static File Middleware (4%)
+// Static file handler for images
 app.use('/images', (req, res) => {
   const imagePath = path.join(__dirname, 'public', 'images', req.path);
   
@@ -58,11 +58,8 @@ app.use('/images', (req, res) => {
   });
 });
 
-// ============================================
-// API ROUTES (12%)
-// ============================================
+// API ROUTES
 
-// Root route
 app.get('/', (req, res) => {
   res.json({
     message: 'CST3144 Backend API',
@@ -75,7 +72,7 @@ app.get('/', (req, res) => {
   });
 });
 
-// 1. GET /lessons (3%)
+// GET /lessons
 app.get('/lessons', async (req, res) => {
   try {
     const lessons = await db.collection('lessons').find({}).toArray();
@@ -87,7 +84,7 @@ app.get('/lessons', async (req, res) => {
   }
 });
 
-// 2. POST /orders (4%)
+// POST /orders
 app.post('/orders', async (req, res) => {
   try {
     const order = {
@@ -111,8 +108,7 @@ app.post('/orders', async (req, res) => {
   }
 });
 
-// 3. PUT /lessons/:id (5%)
-// Updates to EXACT number (not just +/-)
+// PUT /lessons/:id — set exact availableSeats
 app.put('/lessons/:id', async (req, res) => {
   try {
     const lessonId = parseInt(req.params.id);
@@ -143,9 +139,7 @@ app.put('/lessons/:id', async (req, res) => {
   }
 });
 
-// ============================================
-// SEARCH (7%)
-// ============================================
+// SEARCH
 
 // GET /search
 app.get('/search', async (req, res) => {
@@ -190,9 +184,7 @@ app.get('/search', async (req, res) => {
   }
 });
 
-// ============================================
 // START SERVER
-// ============================================
 
 app.listen(PORT, () => {
   console.log('🚀 Server started');
