@@ -29,7 +29,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// CORS - IMPORTANT: Replace with YOUR GitHub username!
+// CORS Configuration
 app.use(cors({
   origin: [
     'https://yfyuky.github.io',
