@@ -33,7 +33,7 @@ app.use((req, res, next) => {
 app.use(cors({
   origin: [
     'https://yfyuky.github.io',
-    'http://localhost:5500',
+    'https://cst3144-coursework1-backend-yamin.onrender.com',
     'http://127.0.0.1:5500'
   ],
   methods: ['GET', 'POST', 'PUT'],
@@ -189,5 +189,5 @@ app.get('/search', async (req, res) => {
 app.listen(PORT, () => {
   console.log('🚀 Server started');
   console.log(`📡 Port: ${PORT}`);
-  console.log(`🌐 URL: http://localhost:${PORT}`);
+  console.log(`🌐 URL: https://cst3144-coursework1-backend-yamin.onrender.com`);
 });
