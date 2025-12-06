@@ -134,17 +134,17 @@ async function seedDatabase() {
     try {
         console.log('🔌 Connecting to MongoDB...');
         client = await MongoClient.connect(MONGODB_URI);
-        console.log('✅ Connected!');
+        console.log('Connected!');
 
         const db = client.db('school');
 
         // Clear existing lessons
         await db.collection('lessons').deleteMany({});
-        console.log('🗑️ Cleared old lessons');
+        console.log('Cleared old lessons');
 
         // Insert new lessons
         const result = await db.collection('lessons').insertMany(lessonsData);
-        console.log(`✅ Inserted ${result.insertedCount} lessons`);
+        console.log(`Inserted ${result.insertedCount} lessons`);
 
         // Create search index
         await db.collection('lessons').createIndex({ 
@@ -152,13 +152,13 @@ async function seedDatabase() {
             location: 'text', 
             description: 'text' 
         });
-        console.log('✅ Search index created');
+        console.log('Search index created');
 
-        console.log('\n✅ DATABASE SEEDED SUCCESSFULLY!');
-        console.log('🚀 Run: npm start');
+        console.log('\nDATABASE SEEDED SUCCESSFULLY!');
+        console.log('Run: npm start');
 
     } catch (error) {
-        console.error('❌ Error:', error.message);
+        console.error('Error:', error.message);
     } finally {
         if (client) {
             await client.close();

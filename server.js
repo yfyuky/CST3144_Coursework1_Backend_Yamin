@@ -15,10 +15,10 @@ let db;
 
 MongoClient.connect(MONGODB_URI)
   .then(client => {
-    console.log('✅ Connected to MongoDB');
+    console.log('Connected to MongoDB');
     db = client.db('school');
   })
-  .catch(error => console.error('❌ MongoDB error:', error));
+  .catch(error => console.error('MongoDB error:', error));
 
 // Logger Middleware
 app.use((req, res, next) => {
@@ -48,7 +48,7 @@ app.use('/images', (req, res) => {
   
   fs.access(imagePath, fs.constants.F_OK, (err) => {
     if (err) {
-      console.log(`❌ Image not found: ${req.path}`);
+      console.log(`Image not found: ${req.path}`);
       return res.status(404).json({ 
         error: 'Image not found',
         path: req.path 
@@ -76,7 +76,7 @@ app.get('/', (req, res) => {
 app.get('/lessons', async (req, res) => {
   try {
     const lessons = await db.collection('lessons').find({}).toArray();
-    console.log(`✅ Returned ${lessons.length} lessons`);
+    console.log(`Returned ${lessons.length} lessons`);
     res.json(lessons);
   } catch (error) {
     console.error('Error:', error);
@@ -96,7 +96,7 @@ app.post('/orders', async (req, res) => {
     };
 
     const result = await db.collection('orders').insertOne(order);
-    console.log(`✅ Order created: ${result.insertedId}`);
+    console.log(`Order created: ${result.insertedId}`);
     
     res.status(201).json({
       message: 'Order created successfully',
@@ -127,7 +127,7 @@ app.put('/lessons/:id', async (req, res) => {
       return res.status(404).json({ error: 'Lesson not found' });
     }
 
-    console.log(`✅ Updated lesson ${lessonId} to ${availableSeats} seats`);
+    console.log(`Updated lesson ${lessonId} to ${availableSeats} seats`);
     res.json({
       message: 'Lesson updated successfully',
       lessonId: lessonId,
@@ -150,7 +150,7 @@ app.get('/search', async (req, res) => {
       return res.status(400).json({ error: 'Search query "q" required' });
     }
 
-    console.log(`🔍 Searching for: "${searchQuery}"`);
+    console.log(`Searching for: "${searchQuery}"`);
 
     const regex = new RegExp(searchQuery, 'i');
     
@@ -171,7 +171,7 @@ app.get('/search', async (req, res) => {
     }
 
     const lessons = await db.collection('lessons').find(searchCriteria).toArray();
-    console.log(`✅ Found ${lessons.length} results`);
+    console.log(`Found ${lessons.length} results`);
 
     res.json({
       query: searchQuery,
@@ -187,7 +187,7 @@ app.get('/search', async (req, res) => {
 // START SERVER
 
 app.listen(PORT, () => {
-  console.log('🚀 Server started');
-  console.log(`📡 Port: ${PORT}`);
-  console.log(`🌐 URL: https://cst3144-coursework1-backend-yamin.onrender.com`);
+  console.log('Server started');
+  console.log(`Port: ${PORT}`);
+  console.log(`URL: https://cst3144-coursework1-backend-yamin.onrender.com`);
 });
