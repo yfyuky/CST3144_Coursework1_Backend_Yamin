@@ -1,8 +1,3 @@
-// ============================================================================
-// CST3144 FULL STACK DEVELOPMENT - COMPLETE BACKEND SERVER
-// Single File Implementation with Database Seeding
-// ============================================================================
-
 const express = require('express');
 const { MongoClient } = require('mongodb');
 const cors = require('cors');
@@ -13,10 +8,7 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// ============================================================================
 // MONGODB CONNECTION SETUP
-// ============================================================================
-
 const MONGODB_URI = process.env.MONGODB_URI;
 let db;
 let mongoClient;
@@ -24,29 +16,26 @@ let mongoClient;
 // Connect to MongoDB
 async function connectToDatabase() {
   try {
-    console.log('🔌 Connecting to MongoDB Atlas...');
+    console.log('Connecting to MongoDB Atlas...');
     mongoClient = await MongoClient.connect(MONGODB_URI);
     db = mongoClient.db('school');
-    console.log('✅ Connected to MongoDB successfully!');
+    console.log('Connected to MongoDB successfully!');
     
     // Check if database needs seeding
     const lessonsCount = await db.collection('lessons').countDocuments();
     if (lessonsCount === 0) {
-      console.log('📦 Database is empty. Seeding data...');
+      console.log('Database is empty. Seeding data...');
       await seedDatabase();
     } else {
-      console.log(`📚 Found ${lessonsCount} lessons in database`);
+      console.log(`Found ${lessonsCount} lessons in database`);
     }
   } catch (error) {
-    console.error('❌ MongoDB connection error:', error.message);
+    console.error('MongoDB connection error:', error.message);
     process.exit(1);
   }
 }
 
-// ============================================================================
 // DATABASE SEEDING DATA
-// ============================================================================
-
 const lessonsData = [
   {
     id: 2001,
@@ -170,19 +159,16 @@ const lessonsData = [
   }
 ];
 
-// ============================================================================
 // DATABASE SEEDING FUNCTION
-// ============================================================================
-
 async function seedDatabase() {
   try {
     // Clear existing lessons
     await db.collection('lessons').deleteMany({});
-    console.log('🗑️  Cleared old lessons');
+    console.log('Cleared old lessons');
 
     // Insert new lessons
     const result = await db.collection('lessons').insertMany(lessonsData);
-    console.log(`✅ Inserted ${result.insertedCount} lessons`);
+    console.log(`Inserted ${result.insertedCount} lessons`);
 
     // Create search index for text search
     try {
@@ -191,49 +177,44 @@ async function seedDatabase() {
         location: 'text', 
         description: 'text' 
       });
-      console.log('🔍 Search index created');
+      console.log('Search index created');
     } catch (indexError) {
-      console.log('⚠️  Search index already exists or error:', indexError.message);
+      console.log('Search index already exists or error:', indexError.message);
     }
 
-    console.log('✅ DATABASE SEEDED SUCCESSFULLY!\n');
+    console.log('DATABASE SEEDED SUCCESSFULLY!\n');
   } catch (error) {
-    console.error('❌ Error seeding database:', error.message);
+    console.error('Error seeding database:', error.message);
     throw error;
   }
 }
 
-// ============================================================================
 // MIDDLEWARE SETUP
-// ============================================================================
-
-// 1. JSON BODY PARSER (must come before logger to ensure req.body exists)
+// JSON BODY PARSER
 app.use(express.json());
 
-// 2. LOGGER MIDDLEWARE (Required by coursework - 4%)
-// Outputs all requests to the server console
+// LOGGER MIDDLEWARE
 app.use((req, res, next) => {
   const timestamp = new Date().toISOString();
   console.log('\n' + '='.repeat(60));
-  console.log(`📝 [${timestamp}]`);
-  console.log(`   Method: ${req.method}`);
-  console.log(`   URL: ${req.url}`);
-  console.log(`   IP: ${req.ip}`);
+  console.log(`[${timestamp}]`);
+  console.log(`Method: ${req.method}`);
+  console.log(`URL: ${req.url}`);
+  console.log(`IP: ${req.ip}`);
   
   if (req.query && Object.keys(req.query).length > 0) {
-    console.log(`   Query Params:`, req.query);
+    console.log(`Query Params:`, req.query);
   }
   
   if (req.body && Object.keys(req.body).length > 0) {
-    console.log(`   Body:`, req.body);
+    console.log(`Body:`, req.body);
   }
   
   console.log('='.repeat(60));
   next();
 });
 
-// 3. CORS MIDDLEWARE
-// Allows cross-origin requests from your frontend
+// CORS MIDDLEWARE
 app.use(cors({
   origin: [
     'https://yfyuky.github.io',
@@ -245,29 +226,25 @@ app.use(cors({
   credentials: true
 }));
 
-// 4. STATIC FILE MIDDLEWARE FOR IMAGES (Required by coursework - 4%)
-// Returns lesson images or error message if image doesn't exist
+// STATIC FILE MIDDLEWARE FOR IMAGES
 app.use('/images', (req, res) => {
   const imagePath = path.join(__dirname, 'public', 'images', req.path);
   
   fs.access(imagePath, fs.constants.F_OK, (err) => {
     if (err) {
-      console.log(`❌ Image not found: ${req.path}`);
+      console.log(`Image not found: ${req.path}`);
       return res.status(404).json({ 
         error: 'Image not found',
         path: req.path,
         message: `The requested image "${req.path}" does not exist on the server.`
       });
     }
-    console.log(`✅ Serving image: ${req.path}`);
+    console.log(`Serving image: ${req.path}`);
     res.sendFile(imagePath);
   });
 });
 
-// ============================================================================
 // API ROUTES
-// ============================================================================
-
 // ROOT ROUTE - API Information
 app.get('/', (req, res) => {
   res.json({
@@ -286,9 +263,8 @@ app.get('/', (req, res) => {
   });
 });
 
-// ============================================================================
-// GET /lessons - Retrieve all lessons (Required - 3%)
-// ============================================================================
+
+// GET /lessons
 app.get('/lessons', async (req, res) => {
   try {
     const lessons = await db.collection('lessons').find({}).toArray();
@@ -303,9 +279,7 @@ app.get('/lessons', async (req, res) => {
   }
 });
 
-// ============================================================================
-// POST /orders - Create a new order (Required - 4%)
-// ============================================================================
+// POST /orders
 app.post('/orders', async (req, res) => {
   try {
     // Validate required fields
@@ -331,11 +305,11 @@ app.post('/orders', async (req, res) => {
     // Insert into database
     const result = await db.collection('orders').insertOne(order);
     
-    console.log(`✅ Order created successfully!`);
-    console.log(`   Order ID: ${result.insertedId}`);
-    console.log(`   Customer: ${name}`);
-    console.log(`   Phone: ${phone}`);
-    console.log(`   Lessons: ${lessonIDs.length} lesson(s)`);
+    console.log(`Order created successfully!`);
+    console.log(`Order ID: ${result.insertedId}`);
+    console.log(`Customer: ${name}`);
+    console.log(`Phone: ${phone}`);
+    console.log(`Lessons: ${lessonIDs.length} lesson(s)`);
     
     res.status(201).json({
       message: 'Order created successfully',
@@ -343,7 +317,7 @@ app.post('/orders', async (req, res) => {
       order: order
     });
   } catch (error) {
-    console.error('❌ Error creating order:', error.message);
+    console.error('Error creating order:', error.message);
     res.status(500).json({ 
       error: 'Failed to create order',
       details: error.message 
@@ -351,9 +325,7 @@ app.post('/orders', async (req, res) => {
   }
 });
 
-// ============================================================================
-// PUT /lessons/:id - Update lesson available spaces (Required - 5%)
-// ============================================================================
+// PUT /lessons/:id
 app.put('/lessons/:id', async (req, res) => {
   try {
     const lessonId = parseInt(req.params.id);
@@ -379,14 +351,14 @@ app.put('/lessons/:id', async (req, res) => {
     );
 
     if (result.matchedCount === 0) {
-      console.log(`❌ Lesson ${lessonId} not found`);
+      console.log(`Lesson ${lessonId} not found`);
       return res.status(404).json({ 
         error: 'Lesson not found',
         lessonId: lessonId 
       });
     }
 
-    console.log(`✅ Lesson ${lessonId} updated to ${availableSeats} available seats`);
+    console.log(`Lesson ${lessonId} updated to ${availableSeats} available seats`);
     
     res.json({
       message: 'Lesson updated successfully',
@@ -395,7 +367,7 @@ app.put('/lessons/:id', async (req, res) => {
       modified: result.modifiedCount
     });
   } catch (error) {
-    console.error('❌ Error updating lesson:', error.message);
+    console.error('Error updating lesson:', error.message);
     res.status(500).json({ 
       error: 'Failed to update lesson',
       details: error.message 
@@ -403,9 +375,7 @@ app.put('/lessons/:id', async (req, res) => {
   }
 });
 
-// ============================================================================
-// GET /search - Search lessons (Challenge component - 7-10%)
-// ============================================================================
+// GET /search
 app.get('/search', async (req, res) => {
   try {
     const searchQuery = req.query.q;
@@ -418,7 +388,7 @@ app.get('/search', async (req, res) => {
       });
     }
 
-    console.log(`🔍 Searching for: "${searchQuery}"`);
+    console.log(`Searching for: "${searchQuery}"`);
 
     // Create case-insensitive regex for search
     const regex = new RegExp(searchQuery, 'i');
@@ -445,7 +415,7 @@ app.get('/search', async (req, res) => {
     // Execute search
     const lessons = await db.collection('lessons').find(searchCriteria).toArray();
     
-    console.log(`✅ Found ${lessons.length} matching lesson(s)`);
+    console.log(`Found ${lessons.length} matching lesson(s)`);
 
     res.json({
       query: searchQuery,
@@ -453,7 +423,7 @@ app.get('/search', async (req, res) => {
       results: lessons
     });
   } catch (error) {
-    console.error('❌ Error searching lessons:', error.message);
+    console.error('Error searching lessons:', error.message);
     res.status(500).json({ 
       error: 'Failed to search lessons',
       details: error.message 
@@ -461,18 +431,15 @@ app.get('/search', async (req, res) => {
   }
 });
 
-// ============================================================================
 // ADDITIONAL UTILITY ROUTES
-// ============================================================================
-
-// GET /orders - Get all orders (for testing/verification)
+// GET /orders
 app.get('/orders', async (req, res) => {
   try {
     const orders = await db.collection('orders').find({}).toArray();
-    console.log(`✅ Returned ${orders.length} orders`);
+    console.log(`Returned ${orders.length} orders`);
     res.json(orders);
   } catch (error) {
-    console.error('❌ Error fetching orders:', error.message);
+    console.error('Error fetching orders:', error.message);
     res.status(500).json({ 
       error: 'Failed to fetch orders',
       details: error.message 
@@ -480,17 +447,17 @@ app.get('/orders', async (req, res) => {
   }
 });
 
-// POST /reset - Reset database to initial state (for testing)
+// POST /reset
 app.post('/reset', async (req, res) => {
   try {
-    console.log('🔄 Resetting database...');
+    console.log('Resetting database...');
     await seedDatabase();
     res.json({ 
       message: 'Database reset successfully',
       lessons: lessonsData.length 
     });
   } catch (error) {
-    console.error('❌ Error resetting database:', error.message);
+    console.error('Error resetting database:', error.message);
     res.status(500).json({ 
       error: 'Failed to reset database',
       details: error.message 
@@ -498,10 +465,7 @@ app.post('/reset', async (req, res) => {
   }
 });
 
-// ============================================================================
 // ERROR HANDLING
-// ============================================================================
-
 // 404 Handler - Route not found
 app.use((req, res) => {
   res.status(404).json({
@@ -521,17 +485,14 @@ app.use((req, res) => {
 
 // Global Error Handler
 app.use((error, req, res, next) => {
-  console.error('❌ Unhandled error:', error);
+  console.error('Unhandled error:', error);
   res.status(500).json({
     error: 'Internal server error',
     message: error.message
   });
 });
 
-// ============================================================================
 // SERVER STARTUP
-// ============================================================================
-
 async function startServer() {
   try {
     // Connect to database first
@@ -539,34 +500,30 @@ async function startServer() {
     
     // Then start the server
     app.listen(PORT, () => {
-      console.log('\n' + '★'.repeat(60));
-      console.log('🚀 CST3144 BACKEND SERVER STARTED SUCCESSFULLY!');
-      console.log('★'.repeat(60));
-      console.log(`📍 Local: http://localhost:${PORT}`);
-      console.log(`🌐 Production: https://cst3144-coursework1-backend-yamin.onrender.com`);
-      console.log('★'.repeat(60));
-      console.log('\n📋 Available Endpoints:');
-      console.log('   GET  /              - API information');
-      console.log('   GET  /lessons       - Get all lessons');
-      console.log('   POST /orders        - Create new order');
-      console.log('   PUT  /lessons/:id   - Update lesson spaces');
-      console.log('   GET  /search?q=...  - Search lessons');
-      console.log('   GET  /orders        - Get all orders (testing)');
-      console.log('   POST /reset         - Reset database (testing)');
-      console.log('★'.repeat(60) + '\n');
+      console.log('CST3144 BACKEND SERVER STARTED SUCCESSFULLY!');
+      console.log(`Local: http://localhost:${PORT}`);
+      console.log(`Production: https://cst3144-coursework1-backend-yamin.onrender.com`);
+      console.log('\n Available Endpoints:');
+      console.log('GET  /              - API information');
+      console.log('GET  /lessons       - Get all lessons');
+      console.log('POST /orders        - Create new order');
+      console.log('PUT  /lessons/:id   - Update lesson spaces');
+      console.log('GET  /search?q=...  - Search lessons');
+      console.log('GET  /orders        - Get all orders (testing)');
+      console.log('POST /reset         - Reset database (testing)');
     });
   } catch (error) {
-    console.error('❌ Failed to start server:', error.message);
+    console.error('Failed to start server:', error.message);
     process.exit(1);
   }
 }
 
 // Handle graceful shutdown
 process.on('SIGINT', async () => {
-  console.log('\n🛑 Shutting down server...');
+  console.log('\n Shutting down server...');
   if (mongoClient) {
     await mongoClient.close();
-    console.log('✅ MongoDB connection closed');
+    console.log(' MongoDB connection closed');
   }
   process.exit(0);
 });
