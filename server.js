@@ -207,7 +207,10 @@ async function seedDatabase() {
 // MIDDLEWARE SETUP
 // ============================================================================
 
-// 1. LOGGER MIDDLEWARE (Required by coursework - 4%)
+// 1. JSON BODY PARSER (must come before logger to ensure req.body exists)
+app.use(express.json());
+
+// 2. LOGGER MIDDLEWARE (Required by coursework - 4%)
 // Outputs all requests to the server console
 app.use((req, res, next) => {
   const timestamp = new Date().toISOString();
@@ -217,11 +220,11 @@ app.use((req, res, next) => {
   console.log(`   URL: ${req.url}`);
   console.log(`   IP: ${req.ip}`);
   
-  if (Object.keys(req.query).length > 0) {
+  if (req.query && Object.keys(req.query).length > 0) {
     console.log(`   Query Params:`, req.query);
   }
   
-  if (Object.keys(req.body).length > 0) {
+  if (req.body && Object.keys(req.body).length > 0) {
     console.log(`   Body:`, req.body);
   }
   
@@ -229,7 +232,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// 2. CORS MIDDLEWARE
+// 3. CORS MIDDLEWARE
 // Allows cross-origin requests from your frontend
 app.use(cors({
   origin: [
@@ -241,9 +244,6 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
 }));
-
-// 3. JSON BODY PARSER
-app.use(express.json());
 
 // 4. STATIC FILE MIDDLEWARE FOR IMAGES (Required by coursework - 4%)
 // Returns lesson images or error message if image doesn't exist
